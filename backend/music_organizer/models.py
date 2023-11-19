@@ -12,6 +12,7 @@ class Album(models.Model):
     album = models.CharField(max_length=200)
     format = models.CharField(choices=FORMAT_CHOICES, default='MP3', max_length=4)
     tracklist = models.JSONField()
+    is_on_device = models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.artist} - {self.album}"

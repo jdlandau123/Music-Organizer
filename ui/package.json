@@ -1,0 +1,25 @@
+{
+  "name": "ui",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "@smui/checkbox": "^7.0.0-beta.15",
+    "@smui/common": "^7.0.0-beta.15",
+    "@smui/data-table": "^7.0.0-beta.15",
+    "@smui/icon-button": "^7.0.0-beta.15",
+    "@smui/select": "^7.0.0-beta.15",
+    "@smui/top-app-bar": "^7.0.0-beta.15",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "svelte": "^4.2.3",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "svelte-material-ui": "^7.0.0-beta.15"
+  }
+}

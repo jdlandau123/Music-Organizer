@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-u%0vn)-n(rhij$uueft*$4(08ptbtrn*)9chy!_t5c7q#iat)_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost']
+
+CORS_ALLOWED_ORIGINS = ('http://localhost:5173', 'http://127.0.0.1:5173')
+
+CORS_TRUSTED_ORIGINS = ('http://localhost:5173', 'http://127.0.0.1:5173')
 
 
 # Application definition
@@ -37,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'music_organizer'
 ]
@@ -49,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -80,6 +86,11 @@ DATABASES = {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
+}
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'music_organizer.pagination.CustomPagination',
+    'PAGE_SIZE': 25
 }
 
 
