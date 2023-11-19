@@ -7,7 +7,12 @@
     import Checkbox from '@smui/checkbox';
     import { onMount } from 'svelte';
 
-    const rows = ['Artist', 'Album', 'Format'];
+    const rows = ['Artist', 'Album', 'File_Format'];
+
+    let sort = 'artist';
+    let sortDirection = 'ascending';
+    let sortValue = 'artist';
+
     let queryResults = {results: [], count: 0}
     $: collection = queryResults.results;
     $: recordsOnDevice = collection?.filter(c => c.is_on_device);
@@ -30,25 +35,41 @@
     $: currentPage && rowsPerPage, fetchCollection();
 
     const fetchCollection = async () => {
-        const results = await fetch(`http://localhost:8000/api/albums/?page=${currentPage}&page_size=${rowsPerPage}`);
+        let url = `http://localhost:8000/api/albums/?page=${currentPage}&page_size=${rowsPerPage}&ordering=${sortValue}`;
+        const results = await fetch(url);
         queryResults = await results.json();
     }
 
     onMount(() => {
 		fetchCollection();
 	});
+
+    function handleSort() {
+        sortValue = sortDirection === 'descending' ? `-${sort}` : sort;
+        fetchCollection();
+    }
 </script>
 
-
-<DataTable class="table" stickyHeader table$aria-label="Collection Data Table" style="width: 100%">
+<DataTable class="table" stickyHeader sortable bind:sort bind:sortDirection
+            on:SMUIDataTable:sorted={handleSort}>
     <Head>
         <Row>
             <Cell checkbox>
                 <Checkbox />
             </Cell>
-            {#each rows as row}
-                <Cell>{row}</Cell>
-            {/each}
+            <Cell columnId="artist">
+                <Label>Artist</Label>
+                <IconButton class="material-icons">arrow_upward</IconButton>
+            </Cell>
+            <Cell columnId="album">
+                <Label>Album</Label>
+                <IconButton class="material-icons">arrow_upward</IconButton>
+            </Cell>
+            <!-- <Cell columnId="format" sortable={false}>Format</Cell> -->
+            <Cell columnId="file_format">
+                <Label>Format</Label>
+                <IconButton class="material-icons">arrow_upward</IconButton>
+            </Cell>
         </Row>
     </Head>
     <Body>
@@ -62,7 +83,7 @@
                     />
                 </Cell>
                 {#each rows as row}
-                    <Cell>{record[row.toLowerCase()]}</Cell>
+                    <Cell class="wrap-cell">{record[row.toLowerCase()]}</Cell>
                 {/each}
             </Row>
         {/each}
@@ -114,11 +135,16 @@
 
 <style>
     :global(.table) {
-        max-width: 50%;
+        width: 100%;
+        /* max-width: 60%; */
         max-height: calc(100vh - 65px);
         overflow: scroll;
         margin-top: 65px;
         padding: 0 20px;
         text-align: left;
+    }
+    :global(.wrap-cell) {
+        max-width: 300px;
+        white-space: pre-wrap;
     }
 </style>

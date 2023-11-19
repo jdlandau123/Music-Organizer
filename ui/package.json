@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepare": "smui-theme compile src/custom-smui.css -i src/theme"
   },
   "devDependencies": {
     "@smui/checkbox": "^7.0.0-beta.15",
@@ -14,8 +15,10 @@
     "@smui/data-table": "^7.0.0-beta.15",
     "@smui/icon-button": "^7.0.0-beta.15",
     "@smui/select": "^7.0.0-beta.15",
+    "@smui/textfield": "^7.0.0-beta.15",
     "@smui/top-app-bar": "^7.0.0-beta.15",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "smui-theme": "^7.0.0-beta.15",
     "svelte": "^4.2.3",
     "vite": "^5.0.0"
   },

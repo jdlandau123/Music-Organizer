@@ -10,7 +10,7 @@ FORMAT_CHOICES = (
 class Album(models.Model):
     artist = models.CharField(max_length=200)
     album = models.CharField(max_length=200)
-    format = models.CharField(choices=FORMAT_CHOICES, default='MP3', max_length=4)
+    file_format = models.CharField(choices=FORMAT_CHOICES, default='MP3', max_length=4)
     tracklist = models.JSONField()
     is_on_device = models.BooleanField(default=False)
 

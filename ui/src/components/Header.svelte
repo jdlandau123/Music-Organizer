@@ -2,7 +2,7 @@
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
 </script>
 
-<TopAppBar class="appbar" variant="standard">
+<TopAppBar class="appbar" color={'primary'} variant="standard">
     <Row>
       <Section>
         <Title class="title">Music Organizer</Title>
@@ -22,7 +22,7 @@
     }
 
     :global(.appbar) {
-        background-color: green;
+        /* background-color: green; */
         color: white;
         font-size: 18pt;
         height: 65px;
