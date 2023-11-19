@@ -125,3 +125,5 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MUSIC_COLLECTION_ROOT_DIR = r'E:\Music Collection'
+
+DEVICE_ROOT_DIR = r'D:\\'

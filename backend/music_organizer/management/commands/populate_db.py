@@ -6,6 +6,10 @@ import os
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
+        """
+        Command for populating database with objects from music collection.
+        Does not updating exist records yet, so recommend wiping the db before running
+        """
         print('Populating Database...')
         
         for artist in os.listdir(settings.MUSIC_COLLECTION_ROOT_DIR):
