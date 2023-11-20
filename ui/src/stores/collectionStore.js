@@ -9,7 +9,8 @@ const queryParams = writable({
     page_size: 25,
     ordering: 'artist',
     artist: null,
-    search: null
+    search: null,
+    file_format: null
 });
 
 const fetchCollection = async (params) => {

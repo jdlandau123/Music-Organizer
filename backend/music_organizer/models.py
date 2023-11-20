@@ -2,7 +2,8 @@ from django.db import models
 
 FORMAT_CHOICES = (
     ('MP3', 'MP3'),
-    ('FLAC', 'FLAC')
+    ('FLAC', 'FLAC'),
+    ('WAV', 'WAV')
 )
 
 # Consider adding mutagen for a bitrate / other tag fields

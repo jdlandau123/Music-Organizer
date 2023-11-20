@@ -3,7 +3,7 @@
 </script>
 
 <div class='wrapper'>
-    <!-- Update this to pull from last fm and get artwork? -->
+    <!-- Update this to pull from last fm and get artwork -->
     {#if $selectedAlbum} 
         <p>Album: {$selectedAlbum.album}</p>
         <p>Artist: {$selectedAlbum.artist}</p>

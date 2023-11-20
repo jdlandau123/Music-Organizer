@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    command: python backend/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app/
+    ports:
+      - 8000:8000
+  rabbitmq:
+    image: rabbitmq:3.8-management-alpine
+    restart: unless-stopped
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+  celery:
+    build: .
+    volumes:
+      - ./:/backend
+    restart: unless-stopped
+    command: bash -c "cd backend && celery -A backend worker -l info"
+    depends_on:
+      - rabbitmq
+  ui:
+    build:
+      context: ./ui
+      dockerfile: ./Dockerfile
+    ports:
+      - 5173:5173
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
