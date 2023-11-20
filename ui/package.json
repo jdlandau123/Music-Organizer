@@ -10,12 +10,17 @@
     "prepare": "smui-theme compile src/custom-smui.css -i src/theme"
   },
   "devDependencies": {
+    "@smui/button": "^7.0.0-beta.15",
     "@smui/checkbox": "^7.0.0-beta.15",
     "@smui/common": "^7.0.0-beta.15",
     "@smui/data-table": "^7.0.0-beta.15",
+    "@smui/dialog": "^7.0.0-beta.15",
+    "@smui/form-field": "^7.0.0-beta.15",
     "@smui/icon-button": "^7.0.0-beta.15",
     "@smui/select": "^7.0.0-beta.15",
+    "@smui/snackbar": "^7.0.0-beta.15",
     "@smui/textfield": "^7.0.0-beta.15",
+    "@smui/tooltip": "^7.0.0-beta.15",
     "@smui/top-app-bar": "^7.0.0-beta.15",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
     "smui-theme": "^7.0.0-beta.15",

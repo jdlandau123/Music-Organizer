@@ -1,11 +1,11 @@
 <script>
     // @ts-nocheck
+    import { queryParams, collection, selectedAlbum } from '../stores/collectionStore';
     import DataTable, { Head, Body, Row, Cell, Pagination } from '@smui/data-table';
     import Select, { Option } from '@smui/select';
     import IconButton from '@smui/icon-button';
     import { Label } from '@smui/common';
     import Checkbox from '@smui/checkbox';
-    import { onMount } from 'svelte';
 
     const rows = ['Artist', 'Album', 'File_Format'];
 
@@ -13,47 +13,22 @@
     let sortDirection = 'ascending';
     let sortValue = 'artist';
 
-    let queryResults = {results: [], count: 0}
-    $: collection = queryResults.results;
-    $: recordsOnDevice = collection?.filter(c => c.is_on_device);
+    $: recordsOnDevice = $collection.results?.filter(c => c.is_on_device);
 
-    let rowsPerPage = 25;
-    let currentPage = 1;
-
-    $: start = ((currentPage - 1) * rowsPerPage);
-    $: end = Math.min(start + rowsPerPage, queryResults.count);
-    $: lastPage = Math.ceil(queryResults.count / rowsPerPage);
-
-    $: if (currentPage > lastPage) {
-        currentPage = lastPage;
-    }
-
-    $: if (currentPage < 1) {
-        currentPage = 1;
-    }
-
-    $: currentPage && rowsPerPage, fetchCollection();
-
-    const fetchCollection = async () => {
-        let url = `http://localhost:8000/api/albums/?page=${currentPage}&page_size=${rowsPerPage}&ordering=${sortValue}`;
-        const results = await fetch(url);
-        queryResults = await results.json();
-    }
-
-    onMount(() => {
-		fetchCollection();
-	});
+    $: start = (($queryParams.page - 1) * $queryParams.page_size);
+    $: end = Math.min(start + $queryParams.page_size, $collection.count);
+    $: lastPage = Math.ceil($collection.count / $queryParams.page_size);
 
     function handleSort() {
         sortValue = sortDirection === 'descending' ? `-${sort}` : sort;
-        fetchCollection();
+        $queryParams.ordering = sortValue;
     }
 </script>
 
 <DataTable class="table" stickyHeader sortable bind:sort bind:sortDirection
             on:SMUIDataTable:sorted={handleSort}>
     <Head>
-        <Row>
+        <Row class="row">
             <Cell checkbox>
                 <Checkbox />
             </Cell>
@@ -65,7 +40,6 @@
                 <Label>Album</Label>
                 <IconButton class="material-icons">arrow_upward</IconButton>
             </Cell>
-            <!-- <Cell columnId="format" sortable={false}>Format</Cell> -->
             <Cell columnId="file_format">
                 <Label>Format</Label>
                 <IconButton class="material-icons">arrow_upward</IconButton>
@@ -73,11 +47,11 @@
         </Row>
     </Head>
     <Body>
-        {#each collection as record}
-            <Row>
+        {#each $collection.results as record}
+            <Row class="row" on:click={() => $selectedAlbum = record}>
                 <Cell checkbox>
                     <Checkbox
-                        bind:group={recordsOnDevice}
+                        bind:checked={record.is_on_device}
                         value={record}
                         valueKey={record.id}
                     />
@@ -91,43 +65,43 @@
     <Pagination slot="paginate">
         <svelte:fragment slot="rowsPerPage">
           <Label>Rows Per Page</Label>
-          <Select variant="outlined" bind:value={rowsPerPage} noLabel>
+          <Select variant="outlined" bind:value={$queryParams.page_size} noLabel>
             <Option value={25}>25</Option>
             <Option value={50}>50</Option>
             <Option value={100}>100</Option>
           </Select>
         </svelte:fragment>
         <svelte:fragment slot="total">
-          {start + 1}-{end} of {queryResults.count}
+          {start + 1}-{end} of {$collection.count}
         </svelte:fragment>
      
         <IconButton
           class="material-icons"
           action="first-page"
           title="First page"
-          on:click={() => (currentPage = 1)}
-          disabled={currentPage === 1}>first_page</IconButton
+          on:click={() => ($queryParams.page = 1)}
+          disabled={$queryParams.page === 1}>first_page</IconButton
         >
         <IconButton
           class="material-icons"
           action="prev-page"
           title="Prev page"
-          on:click={() => currentPage--}
-          disabled={currentPage === 1}>chevron_left</IconButton
+          on:click={() => $queryParams.page--}
+          disabled={$queryParams.page === 1}>chevron_left</IconButton
         >
         <IconButton
           class="material-icons"
           action="next-page"
           title="Next page"
-          on:click={() => currentPage++}
-          disabled={currentPage === lastPage}>chevron_right</IconButton
+          on:click={() => $queryParams.page++}
+          disabled={$queryParams.page === lastPage}>chevron_right</IconButton
         >
         <IconButton
           class="material-icons"
           action="last-page"
           title="Last page"
-          on:click={() => (currentPage = lastPage)}
-          disabled={currentPage === lastPage}>last_page</IconButton
+          on:click={() => ($queryParams.page = lastPage)}
+          disabled={$queryParams.page === lastPage}>last_page</IconButton
         >
     </Pagination>
 </DataTable>
@@ -137,6 +111,7 @@
     :global(.table) {
         width: 100%;
         /* max-width: 60%; */
+        min-height: calc(100vh - 65px);
         max-height: calc(100vh - 65px);
         overflow: scroll;
         margin-top: 65px;
@@ -146,5 +121,9 @@
     :global(.wrap-cell) {
         max-width: 300px;
         white-space: pre-wrap;
+    }
+
+    :global(.row):hover {
+        cursor: pointer;
     }
 </style>
