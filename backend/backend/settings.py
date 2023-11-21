@@ -147,6 +147,8 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-MUSIC_COLLECTION_ROOT_DIR = r'E:\Music Collection'
+MUSIC_COLLECTION_ROOT_DIR = r'E:\Music Collection' # windows
+# MUSIC_COLLECTION_ROOT_DIR = r'/app/music_collection' # docker
 
-DEVICE_ROOT_DIR = r'D:\\'
+DEVICE_ROOT_DIR = r'D:\\' # windows
+# DEVICE_ROOT_DIR = r'/app/device' # docker
