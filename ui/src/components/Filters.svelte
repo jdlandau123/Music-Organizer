@@ -1,6 +1,6 @@
 <script>
     // @ts-nocheck
-    import { queryParams } from '../stores/collectionStore';
+    import { queryParams, recordsOnDevice } from '../stores/collectionStore';
     import { onMount } from 'svelte';
     import Textfield from '@smui/textfield';
     import Select, { Option } from '@smui/select';
@@ -20,9 +20,11 @@
     let dialogTitle = '';
     let pollingInterval = null;
 
-    $: progressDecimal = Math.ceil(progress / totalProgressCount);
+    $: progressDecimal = progress / totalProgressCount;
+    
     $: if (progressDecimal === 1) {
         clearInterval(pollingInterval);
+        setTimeout(() => dialogOpen = false, 3000);
     }
 
     onMount(() => {
@@ -44,12 +46,18 @@
             return;
         }
         dialogOpen = true;
-        pollingInterval = setInterval(() => pollProgress(responseJson), 1000);
+        pollingInterval = setInterval(() => pollProgress(responseJson), 500);
     }
 
-    const syncWithDevice = async () => {
+    const syncDevice = async () => {
         dialogTitle = 'Syncing To Device';
-        const response = await fetch('http://localhost:8000/api/albums/sync_with_device/');
+        const response = await fetch('http://localhost:8000/api/albums/sync_with_device/', {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ids: $recordsOnDevice})
+        });
         const responseJson = await response.json();
         if (!response.ok) {
             errorText = responseJson;
@@ -57,7 +65,7 @@
             return;
         }
         dialogOpen = true;
-        pollingInterval = setInterval(() => pollProgress(responseJson), 1000);
+        pollingInterval = setInterval(() => pollProgress(responseJson), 500);
     }
 
     const pollProgress = async (jobId) => {
@@ -114,8 +122,8 @@
         <Tooltip xPos={'center'}>Sync the app's database with your music library</Tooltip>
     </Wrapper>
     <Wrapper>
-        <Button variant={'raised'} on:click={syncWithDevice}>
-            Sync With Device
+        <Button variant={'raised'} on:click={syncDevice}>
+            Sync Device
         </Button>
         <Tooltip xPos={'center'}>Sync the device with the selected albums</Tooltip>
     </Wrapper>
@@ -128,7 +136,7 @@
 <Dialog bind:open={dialogOpen} surface$style="width: 1000px;">
   <Title>{dialogTitle}</Title>
   <Content>
-    <LinearProgress {progressDecimal} style="width: 75%%;" />
+    <LinearProgress progress={progressDecimal} style="width: 75%%;" />
     <p>{progress} of {totalProgressCount} albums completed</p>
   </Content>
 </Dialog>

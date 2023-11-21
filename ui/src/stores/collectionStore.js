@@ -1,12 +1,15 @@
+// @ts-nocheck
 import { writable } from "svelte/store";
 
-const collection = writable({results: [], count: 0});
+const collection = writable([]);
 
 const selectedAlbum = writable(null);
 
+const recordsOnDevice = writable([]);
+
 const queryParams = writable({
-    page: 1,
-    page_size: 25,
+    // page: 1,
+    // page_size: 25,
     ordering: 'artist',
     artist: null,
     search: null,
@@ -21,9 +24,12 @@ const fetchCollection = async (params) => {
         }
     })
     const results = await fetch(url);
-    collection.set(await results.json());
+    const collectionJson = await results.json();
+    collection.set(collectionJson);
+    // recordsOnDevice.set(collectionJson.results.filter(c => c.is_on_device).map(a => a.id));
+    recordsOnDevice.set(collectionJson.filter(c => c.is_on_device).map(a => a.id));
 }
 
 queryParams.subscribe(params => fetchCollection(params));
 
-export { queryParams, collection, selectedAlbum };
+export { queryParams, collection, selectedAlbum, recordsOnDevice };

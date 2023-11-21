@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.cache import cache
 from .models import Album
 from .serializers import AlbumSerializer
-from .func import sync_music_library_task
+from .func import sync_with_music_library, sync_device
 from uuid import uuid4
 import os
 import threading
@@ -32,18 +32,24 @@ class AlbumViewSet(viewsets.ModelViewSet):
             total += len(os.listdir(os.path.join(settings.MUSIC_COLLECTION_ROOT_DIR, artist)))
         job_id = uuid4()
         cache.set(job_id, {'total': total, 'completed': 0})
-        t = threading.Thread(target=sync_music_library_task,
+        t = threading.Thread(target=sync_with_music_library,
                             args=[job_id])
         t.setDaemon(True)
         t.start()
         return Response(job_id, status=status.HTTP_200_OK)
     
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def sync_with_device(self, request):
         if not os.path.exists(settings.DEVICE_ROOT_DIR):
             return Response('Plug in your mp3 player!', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        if not os.path.exists(settings.MUSIC_COLLECTION_ROOT_DIR):
+            return Response('Plug in your hard drive!', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         job_id = uuid4()
-        cache.set(job_id, {'total': 0, 'completed': 0})
+        cache.set(job_id, {'total': len(request.data['ids']), 'completed': 0})
+        t = threading.Thread(target=sync_device,
+                            args=[job_id, request.data['ids']])
+        t.setDaemon(True)
+        t.start()
         return Response(job_id, status=status.HTTP_200_OK)
     
     @action(methods=['POST'], detail=False)
