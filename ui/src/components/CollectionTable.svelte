@@ -149,7 +149,19 @@
         width: 100%;
         min-height: calc(100vh - 65px);
         max-height: calc(100vh - 65px);
-        overflow: scroll;
+        overflow: hidden;
         margin-top: 65px;
+    }
+
+    :global(.table::-webkit-scrollbar) {
+        width: 0.5rem;
+    }
+
+    :global(.table::-webkit-scrollbar-track) {
+        background: #171615;
+    }
+
+    :global(.table::-webkit-scrollbar-thumb) {
+        background: #b31d0c;
     }
 </style>

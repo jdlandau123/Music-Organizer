@@ -1,11 +1,15 @@
 <script>
     import TopAppBar, { Row, Section, Title } from '@smui/top-app-bar';
+    import { recordsOnDevice } from '../stores/collectionStore';
 </script>
 
 <TopAppBar class="appbar" color={'primary'} variant="standard">
     <Row>
       <Section>
         <Title class="title">Music Organizer</Title>
+      </Section>
+      <Section align={'end'} style="margin-right: 20px; font-size: 14pt;">
+        {$recordsOnDevice.length} records synced
       </Section>
     </Row>
 </TopAppBar>
