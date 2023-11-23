@@ -20,6 +20,8 @@
     let dialogTitle = '';
     let pollingInterval = null;
 
+    let searchText = '';
+
     $: progressDecimal = progress / totalProgressCount;
     
     $: if (progressDecimal === 1) {
@@ -30,6 +32,10 @@
     onMount(() => {
         fetchArtistsList();
     })
+
+    const search = () => {
+        setTimeout(() => $queryParams.search = searchText, 500);
+    }
 
     const fetchArtistsList = async () => {
         const results = await fetch('http://localhost:8000/api/albums/get_artist_list/');
@@ -89,7 +95,7 @@
     }
 </script>
 
-<Textfield bind:value={$queryParams.search} label="Search" style="width: calc(40vw - 20px)"></Textfield>
+<Textfield bind:value={searchText} on:input={search} label="Search" style="width: calc(40vw - 20px)"></Textfield>
 
 <Select bind:value={$queryParams.artist} label="Filter By Artist" style="width: calc(40vw - 20px)">
     <Option value={null}></Option>
